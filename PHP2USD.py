@@ -1,18 +1,20 @@
 # Converts PHP to USD using Google
-import webbrowser, bs4, requests
-from bs4 import BeautifulSoup
+import webbrowser, os, selenium
+from selenium import webdriver
+
+driver = webdriver.Firefox()
 
 
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
+# Gets user-input PHP value
+PHP_value = input('PHP: ')
 
-PHP_value = input("PHP: ")
+# Declares URL and gets the converted result
 URL = 'https://www.google.com/search?client=firefox-b-d&q=' + PHP_value + ' php+to+usd'
-res = requests.get(URL, headers=headers)
-soup = bs4.BeautifulSoup(res.text, features="lxml")
-USD = soup.select('span.DFlfde.SwHCTb')
-USD_value = round(float(USD[0].get('data-value')), 2)
+driver.get(URL)
+goal = driver.find_element_by_class_name('SwHCTb')
+USD = goal.text
 
-formatted_USD = ("{:,}".format(USD_value))
-
-print("USD: " + formatted_USD)
+# Prints the converted result
+print('USD: ' + USD)
